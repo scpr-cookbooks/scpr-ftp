@@ -8,6 +8,7 @@ action :install do
   # just live with the location of the config file (I'd rather it be in
   # /etc/vsftpd/)
   template "/etc/vsftpd.conf" do
+    cookbook "scpr-ftp"
     source "vsftpd/vsftpd.conf.erb"
     notifies :restart, "service[vsftpd]"
   end
@@ -27,6 +28,7 @@ action :install do
 
   # Update /etc/shells to include our ftp user login shell
   template "/etc/shells" do
+    cookbook "scpr-ftp"
     source "shells.erb"
   end
 
@@ -42,7 +44,6 @@ action :install do
     # via SSH by setting their shell to nologin (or similar).
     user user['id'] do
       uid user['uid']
-      group user['gid']
       password user['password']
       home user['home']
       supports manage_home: false
@@ -50,14 +51,12 @@ action :install do
     end
   end
 
-  ftpgroup = search(:groups, "id:ftp").first
-
-  group ftpgroup['id'] do
-    gid ftpgroup['gid']
+  group 'ftp' do
     members users.map { |u| u['id'] }
   end
 
   template ::File.join(node.vsftpd.config_path, "vsftpd.user_list") do
+    cookbook "scpr-ftp"
     source "vsftpd/vsftpd.user_list.erb"
     variables({ users: users })
     notifies :restart, "service[vsftpd]"

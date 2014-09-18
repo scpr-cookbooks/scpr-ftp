@@ -72,6 +72,11 @@ connect_from_port_20=YES
 # ftp server can use as a totally isolated and unprivileged user.
 nopriv_user=nobody
 
+# Enable passive mode
+pasv_enable=Yes
+pasv_max_port=10100
+pasv_min_port=10090
+
 # Enable this and the server will recognise asynchronous ABOR requests. Not
 # recommended for security (the code is non-trivial). Not enabling it,
 # however, may confuse older FTP clients.
@@ -89,7 +94,7 @@ nopriv_user=nobody
 #ascii_download_enable=YES
 
 # You may fully customise the login banner string:
-ftpd_banner=Connected to SCPR-Backups.
+ftpd_banner=Connected to <%= node.hostname %>.
 
 # You may specify a file of disallowed anonymous e-mail addresses. Apparently
 # useful for combatting certain DoS attacks.
