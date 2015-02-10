@@ -1,1 +1,3 @@
-# vanilla-cookbook-cookbook
+# scpr-ftp
+
+Configure a pure-ftpd ftp server.

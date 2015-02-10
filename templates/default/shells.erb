@@ -1,8 +1,0 @@
-# Managed by Chef
-# /etc/shells: valid login shells
-/bin/sh
-/bin/dash
-/bin/bash
-/bin/rbash
-<%= node.vsftpd.ftp_user_shell %>
-<%= node.extra_shells.join("\n") %>

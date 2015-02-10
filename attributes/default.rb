@@ -1,5 +1,6 @@
-default.vsftpd.ftp_user_shell = "/bin/false"
+default.scpr_ftp.home     = "/data/ftp"
+default.scpr_ftp.data_bag = "ftp_users"
+default.scpr_ftp.item     = "ftp"
 
-# Since we're managing the shells file, we need to give clients a way to
-# add extra shells to the shells file.
-default.extra_shells = []
+default.scpr_ftp.uid      = 1099
+default.scpr_ftp.gid      = 1099
