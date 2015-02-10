@@ -44,6 +44,12 @@ link "/etc/pure-ftpd/auth/50PureDB" do
   notifies  :restart, "service[pure-ftpd]"
 end
 
+file "/etc/pure-ftpd/conf/PassivePortRange" do
+  action    :create
+  content   "40000 40100"
+  notifies  :restart, "service[pure-ftpd]"
+end
+
 # -- User Management -- #
 
 # grab our user list from the databag item. should be a hash
