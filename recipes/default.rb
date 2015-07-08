@@ -61,39 +61,32 @@ if File.exists?("/etc/scpr-ftp.json")
   existing = begin JSON.parse(File.read("/etc/scpr-ftp.json")) rescue {} end
 end
 
-passwd = []
-
 # create/update all users in our current users list
-users.each do |user,pass|
-  # create home directory
-  directory "#{node.scpr_ftp.home}/#{user}" do
-    action  :create
-    owner   "pureftpd"
-    mode    0755
+users.each do |user,obj|
+  # support the first version of this recipe, which just had user/pass
+  if obj.is_a?(String)
+    obj = { "password" => obj, "manage_home" => true }
+    users[user] = obj
   end
 
-  # create our passwd file line
-  passwd << "#{user}:#{pass}:#{node.scpr_ftp.uid}:#{node.scpr_ftp.gid}::#{node.scpr_ftp.home}/#{user}/./::::::::::::"
+  scpr_ftp_vuser user do
+    action      :create
+    password    obj["password"]
+    home_dir    obj["home_dir"]
+    manage_home obj["manage_home"]
+    ip_range    obj["ip_range"]
+  end
 end
 
 # are there any users in our old list that should be deleted?
-(users.keys - existing.keys).each do |user|
-  # delete the home directory
-  directory "#{node.scpr_ftp.home}/#{user}" do
-    action :delete
+(existing.keys - users.keys).each do |user|
+  obj = existing[user]
+
+  scpr_ftp_vuser user do
+    action      :delete
+    home_dir    obj["home_dir"]
+    manage_home obj["manage_home"]
   end
-end
-
-execute "update-pureftpd-passdb" do
-  action :nothing
-  command "pure-pw mkdb /etc/pure-ftpd/pureftp.db -f /etc/pure-ftpd/pureftp.passwd"
-end
-
-# write password file
-file "/etc/pure-ftpd/pureftp.passwd" do
-  action  :create
-  content passwd.sort.join("\n")
-  notifies :run, "execute[update-pureftpd-passdb]"
 end
 
 # write our new list of existing users
