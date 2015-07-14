@@ -50,6 +50,12 @@ file "/etc/pure-ftpd/conf/PassivePortRange" do
   notifies  :restart, "service[pure-ftpd]"
 end
 
+file "/etc/pure-ftpd/conf/Umask" do
+  action    :create
+  content   node.scpr_ftp.umask
+  notifies  :restart, "service[pure-ftpd]"
+end
+
 # -- User Management -- #
 
 # grab our user list from the databag item. should be a hash
