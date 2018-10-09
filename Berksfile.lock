@@ -1,7 +1,0 @@
-DEPENDENCIES
-  scpr-ftp
-    path: .
-    metadata: true
-
-GRAPH
-  scpr-ftp (0.4.1)
